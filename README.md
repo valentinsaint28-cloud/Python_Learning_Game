@@ -1,2 +1,2 @@
-# MECHANICAL-OPEN-SOURCE-KEYBOARD
-We are planning to create an mechanical open source keyboard, we want to work as a team of three people: Silvan, Théo and Valentin. Project including PCB design, 3D conception assist by computer, embedded software.
+# Python_Learning_Game
+We are planning to create a Python_Learning_Game, we want to work as a team of three people: Silvan, Théo and Valentin. Project including pygame library.

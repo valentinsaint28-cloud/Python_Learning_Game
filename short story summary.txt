@@ -1,0 +1,3 @@
+The player arrives in Syntax Meadow, where Python is used for everyday tasks.
+They meet villagers who need help with simple problems.
+Each task teaches a new Python concept, and the player helps the village while learning to code.

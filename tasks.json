@@ -1,0 +1,116 @@
+{
+  "chapter_id": "syntax_meadow",
+  "chapter_name": "Syntax Meadow",
+  "tasks": [
+    {
+      "id": 1,
+      "name": "The Welcome Sign",
+      "npc": "Pip",
+      "concept": "print",
+      "story": "Pip is trying to fix the village welcome sign, but it no longer displays a message. Help him print a greeting.",
+      "lesson": "print() displays text on the screen. Put text inside quotation marks and parentheses.",
+      "example": "print(\"Hello!\")",
+      "objective": "Print Welcome to Syntax Meadow!",
+      "starter_code": "",
+      "solution": "print(\"Welcome to Syntax Meadow!\")",
+      "expected_output": "Welcome to Syntax Meadow!",
+      "hints": [
+        "Python has a command to display text.",
+        "Use print().",
+        "Put the message inside quotation marks and parentheses."
+      ]
+    },
+    {
+      "id": 2,
+      "name": "The Baker's Flour",
+      "npc": "Mira",
+      "concept": "variables",
+      "story": "Mira needs 3 bags of flour for her bread. Help her store the amount in a variable so she doesn't forget it.",
+      "lesson": "Variables store information. Give a variable a name and assign a value using =.",
+      "example": "flour = 3\nprint(flour)",
+      "objective": "Create a variable called flour, store 3 in it, and print it.",
+      "starter_code": "# Store the amount of flour\n\n# Print the amount\n",
+      "solution": "flour = 3\nprint(flour)",
+      "expected_output": "3",
+      "hints": [
+        "Variables store information.",
+        "Name the variable flour.",
+        "Assign 3 to it, then print it."
+      ]
+    },
+    {
+      "id": 3,
+      "name": "The Merchant's Calculator",
+      "npc": "Rowan",
+      "concept": "arithmetic",
+      "story": "Rowan is selling potions but his calculator is broken. Two potions cost 7 coins each. Help him calculate the total.",
+      "lesson": "Python can do math. Use + for addition, - for subtraction, * for multiplication, and / for division.",
+      "example": "print(3 * 2)",
+      "objective": "Calculate and print the cost of 2 potions costing 7 coins each.",
+      "starter_code": "potion_price = 7\npotion_count = 2\n\n# Calculate the total\n",
+      "solution": "potion_price = 7\npotion_count = 2\ntotal = potion_price * potion_count\nprint(total)",
+      "expected_output": "14",
+      "hints": [
+        "You know the price of one potion and how many are being bought.",
+        "Use multiplication to calculate the total.",
+        "Multiply potion_price by potion_count and print the result."
+      ]
+    },
+    {
+      "id": 4,
+      "name": "The Farmer's Seeds",
+      "npc": "Finn",
+      "concept": "variables_and_multiplication",
+      "story": "Finn is preparing his fields. He has 4 fields and needs 3 seeds for each. Help him calculate the total number of seeds.",
+      "lesson": "You can use variables together in calculations. Python uses the values stored in variables to calculate the result.",
+      "example": "fields = 2\nseeds_per_field = 3\nprint(fields * seeds_per_field)",
+      "objective": "Calculate how many seeds Finn needs for 4 fields with 3 seeds each.",
+      "starter_code": "fields = 4\nseeds_per_field = 3\n\n# Calculate the total seeds\n\n# Print the result\n",
+      "solution": "fields = 4\nseeds_per_field = 3\ntotal_seeds = fields * seeds_per_field\nprint(total_seeds)",
+      "expected_output": "12",
+      "hints": [
+        "Each field needs 3 seeds.",
+        "You have 4 fields.",
+        "Multiply the number of fields by the seeds needed per field."
+      ]
+    },
+    {
+      "id": 5,
+      "name": "The Locked Gate",
+      "npc": "Brin",
+      "concept": "if_else",
+      "story": "Brin the guard needs help with his gate. It should only open for travelers with at least 5 badges. A traveler currently has 3.",
+      "lesson": "Python can make decisions using if and else. A condition is checked, and Python runs the matching code block.",
+      "example": "badges = 5\nif badges >= 5:\n    print(\"Gate opened!\")\nelse:\n    print(\"Gate closed!\")",
+      "objective": "Print Gate opened! if the traveler has at least 5 badges. Otherwise, print Gate closed!",
+      "starter_code": "badges = 3\n\n# Check the badges\n",
+      "solution": "badges = 3\nif badges >= 5:\n    print(\"Gate opened!\")\nelse:\n    print(\"Gate closed!\")",
+      "expected_output": "Gate closed!",
+      "hints": [
+        "Use if to check the number of badges.",
+        "The gate requires 5 or more badges.",
+        "Use >= to check whether the number is at least 5.",
+        "Use else for when the traveler has fewer badges."
+      ]
+    },
+    {
+      "id": 6,
+      "name": "The Delivery Robot",
+      "npc": "Dot",
+      "concept": "for_loops",
+      "story": "Dot the delivery robot needs to walk 5 steps to deliver a package. Its movement program is broken. Help it repeat the walking command.",
+      "lesson": "A for loop repeats instructions. range(5) makes the loop run 5 times.",
+      "example": "for step in range(5):\n    print(\"Walking...\")",
+      "objective": "Print Walking... 5 times using a loop, then print Delivery complete! once.",
+      "starter_code": "# Make Dot walk 5 steps\n\n# Print the completion message\n",
+      "solution": "for step in range(5):\n    print(\"Walking...\")\nprint(\"Delivery complete!\")",
+      "expected_output": "Walking...\nWalking...\nWalking...\nWalking...\nWalking...\nDelivery complete!",
+      "hints": [
+        "You need to repeat an instruction.",
+        "Use a for loop.",
+        "range(5) repeats 5 times.",
+        "Indent the walking command inside the loop. The completion message belongs outside."
+      ]
+    }
+  ]
+}

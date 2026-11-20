@@ -1,140 +1,89 @@
+import json
+from pathlib import Path
+
 import pygame
-import pytmx
-import pyscroll
-from player import Player
+
+from states.exploring import ExploringState
+
+BASE_DIR = Path(__file__).resolve().parent
+
 
 class Game:
-    
+    """Owns the window, shared data and the stack of states."""
+
     def __init__(self):
-        # window game
+        self.base_dir = BASE_DIR
         self.screen = pygame.display.set_mode((800, 600))
-        pygame.display.set_caption("jeu de test")
+        pygame.display.set_caption("Python Learning Game")
+        self.clock = pygame.time.Clock()
+        self.running = True
 
-        # charge the map
-        tmx_data = pytmx.util_pygame.load_pygame('carte.tmx')
-        map_data = pyscroll.data.TiledMapData(tmx_data)
-        map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
-        map_layer.zoom = 1.5
-        self.map = 'world'
+        # Shared data (every state can read/write it)
+        self.tasks = self.load_tasks()
+        self.completed = set()  # ids of finished tasks
 
-        # add a player
-        player_position = tmx_data.get_object_by_name("player")
-        self.player = Player(player_position.x, player_position.y)
+        # State stack: the last element is the active state
+        self.states = []
+        self.push_state(ExploringState(self))
 
-        # collisions list
-        self.walls = []
-        for i in tmx_data.objects:
-            if i.type == "collision":
-                self.walls.append(pygame.Rect(i.x, i.y, i.width, i.height))
+    # ---------- data ----------
+    def load_tasks(self):
+        with open(self.base_dir / "tasks.json", encoding="utf-8") as f:
+            data = json.load(f)
+        return {task["id"]: task for task in data["tasks"]}
 
-        # draw the layers
-        self.group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer = 5)
-        self.group.add(self.player)
+    # ---------- state management ----------
+    @property
+    def current_state(self):
+        return self.states[-1] if self.states else None
 
-        #define the collision rect to enter the house
-        enter_house = tmx_data.get_object_by_name("enter_house")
-        self.enter_house_rect = pygame.Rect(enter_house.x, enter_house.y, enter_house.width, enter_house.height)
+    def push_state(self, state):
+        """Put a state on top (the previous one is paused, not destroyed)."""
+        if self.current_state:
+            self.current_state.pause()
+        self.states.append(state)
+        state.enter()
 
-    def handle_input(self):
-        pressed = pygame.key.get_pressed()
-        if pressed[pygame.K_UP]:
-            self.player.move_up()
-            self.player.change_animation('up')
-        elif pressed[pygame.K_DOWN]:
-            self.player.move_down()
-            self.player.change_animation('down')
-        elif pressed[pygame.K_RIGHT]:
-            self.player.move_right()
-            self.player.change_animation('right')
-        elif pressed[pygame.K_LEFT]:
-            self.player.move_left()
-            self.player.change_animation('left')
+    def pop_state(self):
+        """Remove the top state and resume the one below."""
+        if self.states:
+            self.states.pop().exit()
+        if self.current_state:
+            self.current_state.resume()
 
-    def switch_house(self):
-        # charge the map
-        tmx_data = pytmx.util_pygame.load_pygame('house.tmx')
-        map_data = pyscroll.data.TiledMapData(tmx_data)
-        map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
-        map_layer.zoom = 1.5
+    def change_state(self, state):
+        """Replace the top state (e.g. Dialogue -> Coding)."""
+        if self.states:
+            self.states.pop().exit()
+        self.states.append(state)
+        state.enter()
 
-        # collisions list
-        self.walls = []
-        for i in tmx_data.objects:
-            if i.type == "collision":
-                self.walls.append(pygame.Rect(i.x, i.y, i.width, i.height))
-
-        # draw the layers
-        self.group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer = 5)
-        self.group.add(self.player)
-
-        #define the collision rect to exit the house
-        enter_house = tmx_data.get_object_by_name("exit_house")
-        self.enter_house_rect = pygame.Rect(enter_house.x, enter_house.y, enter_house.width, enter_house.height)
-
-        # spawn instanciation in front of the house-door
-        spawn_housedoor_point = tmx_data.get_object_by_name("spawn")
-        self.player.position[0] = spawn_housedoor_point.x
-        self.player.position[1] = spawn_housedoor_point.y - 40
-
-    def switch_world(self):
-            # charge the map
-            tmx_data = pytmx.util_pygame.load_pygame('carte.tmx')
-            map_data = pyscroll.data.TiledMapData(tmx_data)
-            map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
-            map_layer.zoom = 1.5
-    
-            # collisions list
-            self.walls = []
-            for i in tmx_data.objects:
-                if i.type == "collision":
-                    self.walls.append(pygame.Rect(i.x, i.y, i.width, i.height))
-    
-            # draw the layers
-            self.group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer = 5)
-            self.group.add(self.player)
-    
-            #define the collision rect to exit the house
-            enter_house = tmx_data.get_object_by_name("enter_house")
-            self.enter_house_rect = pygame.Rect(enter_house.x, enter_house.y, enter_house.width, enter_house.height)
-
-            # spawn instanciation in front of the house
-            spawn_house_point = tmx_data.get_object_by_name("enter_house_exit")
-            self.player.position[0] = spawn_house_point.x
-            self.player.position[1] = spawn_house_point.y + 20
-
-    def update(self):
-        self.group.update()
-
-        # check the house entrance
-        if self.map == 'world' and self.player.feet.colliderect(self.enter_house_rect):
-            self.switch_house()
-            self.map = 'house'
-
-        elif self.map == 'house' and self.player.feet.colliderect(self.enter_house_rect):
-            self.switch_world()
-            self.map = 'world'
-
-        # collisions verification
-        for sprite in self.group.sprites():
-            if sprite.feet.collidelist(self.walls) > -1 :
-                sprite.move_back()
+    # ---------- main loop ----------
+    def draw(self):
+        # Draw from the lowest opaque state up, so transparent
+        # states (dialogue box) appear on top of the frozen map.
+        start = len(self.states) - 1
+        while start > 0 and self.states[start].transparent:
+            start -= 1
+        for state in self.states[start:]:
+            state.draw(self.screen)
 
     def run(self):
-        # FPS du jeu
-        clock = pygame.time.Clock()
-
-        # Boucle de jeu
-        running = True
-        while running:
-            self.player.save_location()
-            self.handle_input()
-            self.update()
-            self.group.center(self.player.rect.center)
-            self.group.draw(self.screen)
-            pygame.display.flip()
+        while self.running and self.states:
+            dt = self.clock.tick(60) / 1000  # seconds since last frame
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
-            clock.tick(60)
+                    self.running = False
+                elif self.current_state:
+                    # current_state is re-read each event, because a
+                    # state may have changed while handling the last one
+                    self.current_state.handle_event(event)
+
+            if self.current_state:
+                self.current_state.update(dt)
+
+            self.draw()
+            pygame.display.flip()
+
         pygame.quit()

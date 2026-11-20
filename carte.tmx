@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="17">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="24">
  <tileset firstgid="1" source="nature.tsx"/>
  <tileset firstgid="721" source="house.tsx"/>
  <layer id="1" name="background" width="50" height="50">
@@ -183,6 +183,42 @@
   </object>
   <object id="15" name="enter_house" x="212.667" y="320.667" width="22" height="37.3333"/>
   <object id="16" name="enter_house_exit" x="223.333" y="384.667">
+   <point/>
+  </object>
+  <object id="17" name="pip" type="npc" x="402" y="168">
+   <properties>
+    <property name="task_id" type="int" value="1"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="18" name="Mira" type="npc" x="700" y="392">
+   <properties>
+    <property name="task_id" type="int" value="2"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="20" name="rowan" type="npc" x="402.667" y="695.333">
+   <properties>
+    <property name="task_id" type="int" value="3"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="21" name="Finn" type="npc" x="86" y="395.333">
+   <properties>
+    <property name="task_id" type="int" value="4"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="22" name="Brin" type="npc" x="550.667" y="563.333">
+   <properties>
+    <property name="task_id" type="int" value="5"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="23" name="Dot" type="npc" x="137.333" y="478">
+   <properties>
+    <property name="task_id" type="int" value="6"/>
+   </properties>
    <point/>
   </object>
  </objectgroup>

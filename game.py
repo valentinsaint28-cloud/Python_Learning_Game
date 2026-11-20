@@ -2,6 +2,7 @@ import pygame
 import pytmx
 import pyscroll
 from player import Player
+from pypad import Pypad
 
 class Game:
     
@@ -9,6 +10,10 @@ class Game:
         # fenetre de jeu
         self.screen = pygame.display.set_mode((800, 600))
         pygame.display.set_caption("jeu de test")
+
+        # loading pypad
+        self.pypad = Pypad(self.screen)
+        self.pypad.open()
 
         #charger la carte
         tmx_data = pytmx.util_pygame.load_pygame('carte.tmx')
@@ -65,11 +70,17 @@ class Game:
             self.update()
             self.group.center(self.player.rect.center)
             self.group.draw(self.screen)
+
+            self.pypad.draw()
             pygame.display.flip()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                elif self.pypad.visible:
+                    self.pypad.handle_event(event)
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_e:
+                    self.pypad.open()
             clock.tick(60)
         pygame.quit()
 

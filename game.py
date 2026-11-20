@@ -23,7 +23,7 @@ class Game:
         # liste des collisions
         self.walls = []
         for i in tmx_data.objects:
-            if i == "collision":
+            if i.type == "collision":
                 self.walls.append(pygame.Rect(i.x, i.y, i.width, i.height))
 
         #dessiner le groupe de calques
@@ -45,6 +45,14 @@ class Game:
             self.player.move_left()
             self.player.change_animation('left')
 
+    def update(self):
+        self.group.update()
+
+        # collisions verification
+        for sprite in self.group.sprites():
+            if sprite.feet.collidelist(self.walls) > -1 :
+                sprite.move_back()
+
     def run(self):
         # FPS du jeu
         clock = pygame.time.Clock()
@@ -52,9 +60,9 @@ class Game:
         # Boucle de jeu
         running = True
         while running:
-
+            self.player.save_location()
             self.handle_input()
-            self.group.update()
+            self.update()
             self.group.center(self.player.rect.center)
             self.group.draw(self.screen)
             pygame.display.flip()

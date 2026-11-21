@@ -13,7 +13,6 @@ class Game:
 
         # loading pypad
         self.pypad = Pypad(self.screen)
-        self.pypad.open()
 
         #charger la carte
         tmx_data = pytmx.util_pygame.load_pygame('carte.tmx')
@@ -81,6 +80,7 @@ class Game:
                     self.pypad.handle_event(event)
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_e:
                     self.pypad.open()
+                
             clock.tick(60)
         pygame.quit()
 

@@ -1,86 +1,89 @@
+import json
+from pathlib import Path
+
 import pygame
-import pytmx
-import pyscroll
-from player import Player
-from pypad import Pypad
+
+from states.exploring import ExploringState
+
+BASE_DIR = Path(__file__).resolve().parent
+
 
 class Game:
-    
+    """Owns the window, shared data and the stack of states."""
+
     def __init__(self):
-        # fenetre de jeu
+        self.base_dir = BASE_DIR
         self.screen = pygame.display.set_mode((800, 600))
-        pygame.display.set_caption("jeu de test")
+        pygame.display.set_caption("Python Learning Game")
+        self.clock = pygame.time.Clock()
+        self.running = True
 
-        # loading pypad
-        self.pypad = Pypad(self.screen)
+        # Shared data (every state can read/write it)
+        self.tasks = self.load_tasks()
+        self.completed = set()  # ids of finished tasks
 
-        #charger la carte
-        tmx_data = pytmx.util_pygame.load_pygame('carte.tmx')
-        map_data = pyscroll.data.TiledMapData(tmx_data)
-        map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
-        map_layer.zoom = 1.5
+        # State stack: the last element is the active state
+        self.states = []
+        self.push_state(ExploringState(self))
 
-        # ajouter un joueur
-        player_position = tmx_data.get_object_by_name("player")
-        self.player = Player(player_position.x, player_position.y)
+    # ---------- data ----------
+    def load_tasks(self):
+        with open(self.base_dir / "tasks.json", encoding="utf-8") as f:
+            data = json.load(f)
+        return {task["id"]: task for task in data["tasks"]}
 
-        # liste des collisions
-        self.walls = []
-        for i in tmx_data.objects:
-            if i.type == "collision":
-                self.walls.append(pygame.Rect(i.x, i.y, i.width, i.height))
+    # ---------- state management ----------
+    @property
+    def current_state(self):
+        return self.states[-1] if self.states else None
 
-        #dessiner le groupe de calques
-        self.group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer = 3)
-        self.group.add(self.player)
+    def push_state(self, state):
+        """Put a state on top (the previous one is paused, not destroyed)."""
+        if self.current_state:
+            self.current_state.pause()
+        self.states.append(state)
+        state.enter()
 
-    def handle_input(self):
-        pressed = pygame.key.get_pressed()
-        if pressed[pygame.K_UP]:
-            self.player.move_up()
-            self.player.change_animation('up')
-        elif pressed[pygame.K_DOWN]:
-            self.player.move_down()
-            self.player.change_animation('down')
-        elif pressed[pygame.K_RIGHT]:
-            self.player.move_right()
-            self.player.change_animation('right')
-        elif pressed[pygame.K_LEFT]:
-            self.player.move_left()
-            self.player.change_animation('left')
+    def pop_state(self):
+        """Remove the top state and resume the one below."""
+        if self.states:
+            self.states.pop().exit()
+        if self.current_state:
+            self.current_state.resume()
 
-    def update(self):
-        self.group.update()
+    def change_state(self, state):
+        """Replace the top state (e.g. Dialogue -> Coding)."""
+        if self.states:
+            self.states.pop().exit()
+        self.states.append(state)
+        state.enter()
 
-        # collisions verification
-        for sprite in self.group.sprites():
-            if sprite.feet.collidelist(self.walls) > -1 :
-                sprite.move_back()
+    # ---------- main loop ----------
+    def draw(self):
+        # Draw from the lowest opaque state up, so transparent
+        # states (dialogue box) appear on top of the frozen map.
+        start = len(self.states) - 1
+        while start > 0 and self.states[start].transparent:
+            start -= 1
+        for state in self.states[start:]:
+            state.draw(self.screen)
 
     def run(self):
-        # FPS du jeu
-        clock = pygame.time.Clock()
-
-        # Boucle de jeu
-        running = True
-        while running:
-            self.player.save_location()
-            self.handle_input()
-            self.update()
-            self.group.center(self.player.rect.center)
-            self.group.draw(self.screen)
-
-            self.pypad.draw()
-            pygame.display.flip()
+        while self.running and self.states:
+            dt = self.clock.tick(60) / 1000  # seconds since last frame
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
-                elif self.pypad.visible:
-                    self.pypad.handle_event(event)
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_e:
-                    self.pypad.open()
-                
-            clock.tick(60)
-        pygame.quit()
+                    self.running = False
+                elif self.current_state:
+                    # current_state is re-read each event, because a
+                    # state may have changed while handling the last one
+                    self.current_state.handle_event(event)
 
+            if self.current_state:
+                self.current_state.update(dt)
+
+            self.draw()
+            pygame.display.flip()
+
+        pygame.quit()

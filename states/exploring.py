@@ -5,6 +5,7 @@ import pyscroll
 from player import Player
 from states.base import State
 from states.dialogue import DialogueState
+from states.task_menu import TaskMenuState
 from ui import draw_panel
 
 # Every map of the game: file + camera zoom
@@ -26,6 +27,7 @@ class ExploringState(State):
     def __init__(self, game):
         super().__init__(game)
         self.font = pygame.font.Font(None, 24)
+        self.tasks_hint = self.font.render("J - Tasks", True, (255, 255, 255))
 
         self.player = Player(0, 0)
         self.map_name = None
@@ -81,10 +83,12 @@ class ExploringState(State):
 
     # ---------- events ----------
     def handle_event(self, event):
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_e:
-            if self.nearby_task is not None:
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_e and self.nearby_task is not None:
                 task = self.game.tasks[self.nearby_task]
                 self.game.push_state(DialogueState(self.game, task))
+            elif event.key == pygame.K_j:
+                self.game.push_state(TaskMenuState(self.game))
 
     # ---------- update ----------
     def handle_input(self):
@@ -130,6 +134,11 @@ class ExploringState(State):
     # ---------- draw ----------
     def draw(self, screen):
         self.group.draw(screen)
+
+        # permanent hint in the top-right corner
+        hint_rect = self.tasks_hint.get_rect(topright=(screen.get_width() - 20, 16))
+        draw_panel(screen, hint_rect.inflate(24, 14))
+        screen.blit(self.tasks_hint, hint_rect)
 
         if self.nearby_task is not None:
             task = self.game.tasks[self.nearby_task]

@@ -17,7 +17,10 @@ class DialogueState(State):
         self.font = pygame.font.Font(None, 26)
         self.name_font = pygame.font.Font(None, 32)
         self.text = task["story"]
+        self.notLeveledText = task["notleveled"]
+        self.level = len(game.completed)+1
         self.progress = 0.0
+        self.leveled = self.level >= self.task["id"]
 
     @property
     def finished(self):
@@ -29,9 +32,11 @@ class DialogueState(State):
         if event.key in (pygame.K_RETURN, pygame.K_SPACE):
             if not self.finished:
                 self.progress = len(self.text)  # skip the typewriter
-            else:
-                # replace dialogue by the coding screen
+            elif self.leveled:
+                # replace dialogue by the coding screen, only when level is high enough
                 self.game.change_state(CodingState(self.game, self.task))
+            else:
+                self.game.pop_state()  # go back to the map
         elif event.key == pygame.K_ESCAPE:
             self.game.pop_state()  # back to exploring
 
@@ -49,7 +54,8 @@ class DialogueState(State):
         # wrap the FULL text first so words don't jump while typing
         remaining = int(self.progress)
         y = box.y + 48
-        for line in wrap_text(self.text, self.font, box.width - 32):
+        text = self.text if self.leveled else self.notLeveledText
+        for line in wrap_text(text, self.font, box.width - 32):
             if remaining <= 0:
                 break
             surf = self.font.render(line[:remaining], True, (240, 240, 240))

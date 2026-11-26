@@ -18,9 +18,9 @@ def wrap_text(text, font, max_width):
     return lines
 
 
-def draw_panel(surface, rect, bg=(20, 20, 35), border=(230, 230, 240), alpha=235):
+def draw_panel(surface, rect, bg=(20, 20, 35), border=(230, 230, 240), alpha=235, radius=8):
     """Semi-transparent panel with a border."""
     panel = pygame.Surface(rect.size, pygame.SRCALPHA)
-    panel.fill((*bg, alpha))
+    pygame.draw.rect(panel, (*bg, alpha), panel.get_rect(), border_radius=radius)
     surface.blit(panel, rect.topleft)
     pygame.draw.rect(surface, border, rect, 3, border_radius=6)

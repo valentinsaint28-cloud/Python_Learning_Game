@@ -2,6 +2,7 @@ import pygame
 
 from states.base import State
 from states.coding import CodingState
+from states.pypad import PypadState
 from ui import draw_panel, wrap_text
 
 
@@ -34,11 +35,16 @@ class DialogueState(State):
                 self.progress = len(self.text)  # skip the typewriter
             elif self.leveled:
                 # replace dialogue by the coding screen, only when level is high enough
-                self.game.change_state(CodingState(self.game, self.task))
+                self.game.change_state(PypadState(self.game, self.task))
+
             else:
                 self.game.pop_state()  # go back to the map
         elif event.key == pygame.K_ESCAPE:
             self.game.pop_state()  # back to exploring
+
+
+
+
 
     def update(self, dt):
         if not self.finished:

@@ -1,6 +1,5 @@
 import pygame
 
-
 class CodeEditor:
     def __init__(self, rect, font):
         self.rect = rect

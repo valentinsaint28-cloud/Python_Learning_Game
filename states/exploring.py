@@ -65,7 +65,7 @@ class ExploringState(State):
         # new sprite group for the new map
         if self.group:
             self.group.remove(self.player)
-        self.group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=3)
+        self.group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=1)
         self.group.add(self.player)
 
         # put the player on the spawn point of this map

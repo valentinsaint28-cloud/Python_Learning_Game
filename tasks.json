@@ -7,7 +7,7 @@
       "name": "The Welcome Sign",
       "npc": "Pip",
       "concept": "print",
-      "notleveled":"",
+      "notleveled": "",
       "story": "Pip is trying to fix the village welcome sign, but it no longer displays a message. Help him print a greeting.",
       "lesson": "print() displays text on the screen. Put text inside quotation marks and parentheses.",
       "example": "print(\"Hello!\")",
@@ -15,6 +15,9 @@
       "starter_code": "",
       "solution": "print(\"Welcome to Syntax Meadow!\")",
       "expected_output": "Welcome to Syntax Meadow!",
+      "checks": [
+        "call:print"
+      ],
       "hints": [
         "Python has a command to display text.",
         "Use print().",
@@ -34,6 +37,9 @@
       "starter_code": "# Store the amount of flour\n\n# Print the amount\n",
       "solution": "flour = 3\nprint(flour)",
       "expected_output": "3",
+      "checks": [
+        "variable:flour"
+      ],
       "hints": [
         "Variables store information.",
         "Name the variable flour.",
@@ -53,6 +59,9 @@
       "starter_code": "potion_price = 7\npotion_count = 2\n\n# Calculate the total\n",
       "solution": "potion_price = 7\npotion_count = 2\ntotal = potion_price * potion_count\nprint(total)",
       "expected_output": "14",
+      "checks": [
+        "operator:*"
+      ],
       "hints": [
         "You know the price of one potion and how many are being bought.",
         "Use multiplication to calculate the total.",
@@ -72,6 +81,9 @@
       "starter_code": "fields = 4\nseeds_per_field = 3\n\n# Calculate the total seeds\n\n# Print the result\n",
       "solution": "fields = 4\nseeds_per_field = 3\ntotal_seeds = fields * seeds_per_field\nprint(total_seeds)",
       "expected_output": "12",
+      "checks": [
+        "operator:*"
+      ],
       "hints": [
         "Each field needs 3 seeds.",
         "You have 4 fields.",
@@ -91,6 +103,10 @@
       "starter_code": "badges = 3\n\n# Check the badges\n",
       "solution": "badges = 3\nif badges >= 5:\n    print(\"Gate opened!\")\nelse:\n    print(\"Gate closed!\")",
       "expected_output": "Gate closed!",
+      "checks": [
+        "if",
+        "else"
+      ],
       "hints": [
         "Use if to check the number of badges.",
         "The gate requires 5 or more badges.",
@@ -111,6 +127,9 @@
       "starter_code": "# Make Dot walk 5 steps\n\n# Print the completion message\n",
       "solution": "for step in range(5):\n    print(\"Walking...\")\nprint(\"Delivery complete!\")",
       "expected_output": "Walking...\nWalking...\nWalking...\nWalking...\nWalking...\nDelivery complete!",
+      "checks": [
+        "for_loop"
+      ],
       "hints": [
         "You need to repeat an instruction.",
         "Use a for loop.",
